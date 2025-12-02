@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>L&T Initiation of Coverage – Interactive Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Simple reset & base styles -->
+  <style>
+    :root {
+  --bg: #020617;
+  --bg-alt: #020617;
+  --card-bg: #020617;
+  --card-border: #111827;
+  --accent: #22c55e;        /* green */
+  --accent-soft: rgba(34,197,94,0.15);
+  --accent-strong: #22c55e;
+  --text-main: #e5e7eb;
+  --text-muted: #6b7280;
+}
+.card {
+  background: #020617;
+  box-shadow: none;
+}
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #0b1120, #020617 55%);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .page {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 18px 12px 48px;
+    }
+
+    header {
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .brand-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: linear-gradient(to right, rgba(56,189,248,0.15), transparent);
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .rating-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(15,23,42,0.75);
+      font-size: 0.8rem;
+    }
+
+    .rating-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+    }
+
+    .section {
+      margin-bottom: 26px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+    }
+
+    .section-pill {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 3px 9px;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .grid-cols-2-sm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-cols-3-sm { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 900px) {
+      .grid-cols-3-lg { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid-cols-4-lg { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1e293b, #020617 65%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-soft);
+      padding: 12px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at top right,
+        rgba(56,189,248,0.16),
+        transparent 55%
+      );
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-heading {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .card-value {
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+
+    .card-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--text-muted);
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .pill-upside {
+      color: var(--success);
+      background: rgba(34,197,94,0.12);
+      border-color: rgba(74,222,128,0.5);
+    }
+
+    .pill-down {
+      color: var(--danger);
+      background: rgba(248,113,113,0.12);
+      border-color: rgba(248,113,113,0.6);
+    }
+
+    .flex {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .flex-wrap { flex-wrap: wrap; }
+
+    .mt-2 { margin-top: 6px; }
+    .mt-3 { margin-top: 10px; }
+    .mt-4 { margin-top: 14px; }
+
+    .text-muted { color: var(--text-muted); font-size: 0.8rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th, td {
+      padding: 7px 6px;
+      border-bottom: 1px solid #111827;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      background: rgba(15,23,42,0.8);
+    }
+
+    tbody tr:nth-child(even) td {
+      background: rgba(15,23,42,0.55);
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--text-muted);
+    }
+
+    .tag-strong {
+      border-color: var(--accent-strong);
+      color: var(--accent);
+    }
+
+    .score-bar {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #22c55e, #38bdf8);
+    }
+
+    .risk-pill {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+    .risk-prob { background: rgba(59,130,246,0.18); color: #bfdbfe; }
+    .risk-impact { background: rgba(248,250,252,0.08); color: #fee2e2; }
+    .risk-detect { background: rgba(52,211,153,0.18); color: #bbf7d0; }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 260px;
+    }
+
+    @media (min-width: 980px) {
+      .chart-container-lg { height: 320px; }
+    }
+
+    .muted-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .thesis-list {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-left: 18px;
+      margin-top: 6px;
+    }
+
+    .thesis-list li { margin-bottom: 4px; }
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.75rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+  </style>
+
+  <!-- Chart.js for visualisations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="page">
+
+    <!-- HEADER -->
+    <header>
+      <div class="brand">
+        <div class="brand-title">
+          Larsen &amp; Toubro Ltd (L&amp;T)
+          <span class="badge">Initiation of Coverage</span>
+        </div>
+        <div class="subtitle">
+          Goldman Sachs-style Equity Research Dashboard • NSE: LT • India Infrastructure &amp; Capital Goods
+        </div>
+      </div>
+      <div class="flex flex-wrap">
+        <div class="rating-pill">
+          <span class="rating-dot"></span>
+          Rating: <strong>Buy</strong>
+        </div>
+        <div class="chip">
+          <span class="chip-dot"></span>
+          FY25 AR • Q4 FY25 &amp; Q2 FY26 company disclosures
+        </div>
+      </div>
+    </header>
+
+    <!-- KPI BLOCK -->
+    <section class="section" id="kpi-block">
+      <div class="section-header">
+        <div class="section-title">Key Metrics</div>
+        <span class="section-pill">KPI Block</span>
+      </div>
+      <div class="grid grid-cols-2-sm grid-cols-4-lg">
+        <!-- CMP -->
+        <article class="card">
+          <div class="card-heading">CMP (₹)</div>
+          <div class="card-value">4,061.4</div>
+          <div class="card-sub">As of 1 Dec 2025, NSE</div>
+        </article>
+
+        <!-- Target Price -->
+        <article class="card">
+          <div class="card-heading">Target Price (₹)</div>
+          <div class="card-value">4,700</div>
+          <div class="card-sub">GS 12M TP, FY27E based</div>
+        </article>
+
+        <!-- Upside -->
+        <article class="card">
+          <div class="card-heading">Implied Upside</div>
+          <div class="card-value">+16%</div>
+          <div class="card-sub">
+            <span class="chip pill-upside">TP / CMP − 1</span>
+          </div>
+        </article>
+
+        <!-- Market Cap -->
+        <article class="card">
+          <div class="card-heading">Market Cap</div>
+          <div class="card-value">₹2.24 tn</div>
+          <div class="card-sub">ICICIdirect, 1 Dec 2025</div>
+        </article>
+
+        <!-- Order Book -->
+        <article class="card">
+          <div class="card-heading">Order Book (Q2 FY26)</div>
+          <div class="card-value">₹6.67 tn</div>
+          <div class="card-sub">Order book, Q2 FY26</div>
+        </article>
+
+        <!-- Order Inflow -->
+        <article class="card">
+          <div class="card-heading">Order Inflow (FY25)</div>
+          <div class="card-value">₹3.57 tn</div>
+          <div class="card-sub">+18% YoY</div>
+        </article>
+
+        <!-- EBITDA margin -->
+        <article class="card">
+          <div class="card-heading">EBITDA Margin</div>
+          <div class="card-value">11.0%</div>
+          <div class="card-sub">FY25 consolidated</div>
+        </article>
+
+        <!-- ROE / ROCE -->
+        <article class="card">
+          <div class="card-heading">ROE / ROCE</div>
+          <div class="card-value">16.3% / ~16–17%</div>
+          <div class="card-sub">FY25; ROE Q2 FY26 annualised 17.2%</div>
+        </article>
+
+        <!-- FCF Yield -->
+        <article class="card">
+          <div class="card-heading">FCF Yield</div>
+          <div class="card-value">~3.1%</div>
+          <div class="card-sub">FY25 FCF estimate vs average market cap</div>
+        </article>
+
+        <!-- Leverage -->
+        <article class="card">
+          <div class="card-heading">Debt / Equity</div>
+          <div class="card-value">~0.30x</div>
+          <div class="card-sub">FY25 consolidated</div>
+        </article>
+
+        <!-- 52W range -->
+        <article class="card">
+          <div class="card-heading">52W High / Low (₹)</div>
+          <div class="card-value">4,140 / 2,965</div>
+          <div class="card-sub">As of 1 Dec 2025</div>
+        </article>
+
+        <!-- Book-to-bill -->
+        <article class="card">
+          <div class="card-heading">Book / Bill</div>
+          <div class="card-value">2.26x</div>
+          <div class="card-sub">FY25 order book vs revenue</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- GS THESIS IN A CHART + FIVE PILLARS -->
+    <section class="section" id="thesis-block">
+      <div class="section-header">
+        <div class="section-title">GS Thesis in a Chart &amp; Five Pillars</div>
+        <span class="section-pill">Description Block</span>
+      </div>
+
+      <div class="grid grid-cols-2-sm">
+        <!-- Conceptual chart description -->
+        <article class="card">
+          <div class="card-heading">Thesis in a Chart</div>
+          <div class="card-sub">
+            Conceptual EPS index evolution from domestic infra proxy to diversified
+            global EPC &amp; energy transition platform.
+          </div>
+          <ul class="thesis-list mt-2">
+            <li>Base EPS index FY15 = 100 (illustrative).</li>
+            <li>FY25 actual EPS index ≈ 210.</li>
+            <li>GS FY28E EPS index ≈ 280 driven by order book, mix &amp; ROE uplift.</li>
+            <li>Order inflow CAGR and international mix overlayed on the chart.</li>
+          </ul>
+          <p class="muted-note mt-3">
+            One-line thesis: L&amp;T is migrating from a domestic infra proxy to a
+            diversified global EPC &amp; energy transition platform, with record FY25
+            order inflows of ₹3.57 tn and a ₹6.67 tn Q2 FY26 order book supporting
+            double-digit growth and structurally higher ROE.
+          </p>
+        </article>
+
+        <!-- Five pillars -->
+        <article class="card">
+          <div class="card-heading">GS Five-Pillar Thesis</div>
+          <ul class="thesis-list mt-2">
+            <li><strong>Structural drivers:</strong> multi-year India public capex, international growth, energy transition.</li>
+            <li><strong>Competitive advantage:</strong> one of India’s largest order books, multi-discipline EPC, strong subsidiaries.</li>
+            <li><strong>Execution strength:</strong> 45% YoY order inflow in Q2 FY26, 10.2% NWC / revenue.</li>
+            <li><strong>Financial outperformance:</strong> 16% revenue growth &amp; 11% EBITDA margin in FY25; ROE 16.3%.</li>
+            <li><strong>Valuation support:</strong> TP based on blended P/E, EV/EBITDA and DCF; structural premium to peers.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- SCORECARD -->
+    <section class="section" id="scorecard">
+      <div class="section-header">
+        <div class="section-title">GS Scorecard (0–100)</div>
+        <span class="section-pill">Scorecard Block</span>
+      </div>
+      <article class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>Score</th>
+              <th>Commentary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Growth</td>
+              <td style="width:140px;">
+                82
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:82%;"></div>
+                </div>
+              </td>
+              <td>18% FY25 order inflow growth and 45% YoY in Q2 FY26; 16% FY25 revenue growth and double-digit trajectory.</td>
+            </tr>
+            <tr>
+              <td>Profitability</td>
+              <td>
+                74
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:74%;"></div>
+                </div>
+              </td>
+              <td>11% FY25 EBITDA margin with improving working capital; still EPC-like margin profile vs asset-light peers.</td>
+            </tr>
+            <tr>
+              <td>Returns</td>
+              <td>
+                80
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:80%;"></div>
+                </div>
+              </td>
+              <td>ROE up to 16.3% in FY25 and 17.2% annualised in Q2 FY26; GS sees scope for high-teens by FY28E.</td>
+            </tr>
+            <tr>
+              <td>Competitive moat</td>
+              <td>
+                88
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:88%;"></div>
+                </div>
+              </td>
+              <td>Scale, multi-discipline EPC capability and ecosystem of subsidiaries create a wide moat versus domestic peers.</td>
+            </tr>
+            <tr>
+              <td>Catalyst visibility</td>
+              <td>
+                75
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:75%;"></div>
+                </div>
+              </td>
+              <td>Strong project pipeline, Hyderabad Metro stake sale progress, potential buybacks/dividends and ESG initiatives.</td>
+            </tr>
+            <tr>
+              <td>Balance sheet strength</td>
+              <td>
+                78
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:78%;"></div>
+                </div>
+              </td>
+              <td>Net debt / equity ~0.3x with improving FCF and access to ESG bonds.</td>
+            </tr>
+            <tr>
+              <td>Risk profile</td>
+              <td>
+                60
+                <div class="score-bar mt-2">
+                  <div class="score-fill" style="width:60%;"></div>
+                </div>
+              </td>
+              <td>Exposure to lump-sum EPC, commodity and sovereign risks keeps risk moderate despite strong governance.</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <!-- FINANCIAL TRENDS & CHARTS -->
+    <section class="section" id="charts">
+      <div class="section-header">
+        <div class="section-title">Financial Trends &amp; Projections</div>
+        <span class="section-pill">Chart Blocks</span>
+      </div>
+
+      <div class="grid grid-cols-2-sm">
+        <!-- Revenue, EBITDA, PAT -->
+        <article class="card">
+          <div class="card-heading">5-Year Revenue, EBITDA &amp; PAT</div>
+          <div class="chart-container chart-container-lg">
+            <canvas id="chartPnl"></canvas>
+          </div>
+          <p class="muted-note">
+            FY24 &amp; FY25 actuals; FY26E–FY28E GS estimates from the report.
+          </p>
+        </article>
+
+        <!-- Order inflow vs revenue -->
+        <article class="card">
+          <div class="card-heading">Order Inflow vs Execution</div>
+          <div class="chart-container chart-container-lg">
+            <canvas id="chartOrders"></canvas>
+          </div>
+          <p class="muted-note">
+            FY24 &amp; FY25 order inflow vs revenue; FY26E GS projections.
+          </p>
+        </article>
+      </div>
+
+      <div class="grid grid-cols-2-sm mt-3">
+        <!-- DCF sensitivity as heatmap style table -->
+        <article class="card">
+          <div class="card-heading">DCF Sensitivity Matrix</div>
+          <table class="mt-2">
+            <thead>
+              <tr>
+                <th>WACC \\ g</th>
+                <th>3.5%</th>
+                <th>4.0%</th>
+                <th>4.5%</th>
+                <th>5.0%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>9.5%</td><td>5,050</td><td>5,300</td><td>5,620</td><td>6,050</td>
+              </tr>
+              <tr>
+                <td>10.0%</td><td>4,650</td><td>4,850</td><td>5,100</td><td>5,450</td>
+              </tr>
+              <tr>
+                <td>10.5%</td><td>4,300</td><td>4,500</td><td>4,700</td><td>5,000</td>
+              </tr>
+              <tr>
+                <td>11.0%</td><td>4,000</td><td>4,200</td><td><strong>4,400</strong></td><td>4,650</td>
+              </tr>
+              <tr>
+                <td>11.5%</td><td>3,750</td><td>3,950</td><td>4,150</td><td>4,350</td>
+              </tr>
+              <tr>
+                <td>12.5%</td><td>3,450</td><td>3,650</td><td>3,850</td><td>4,050</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="muted-note">
+            Implied value per share (₹) from GS DCF light calculations in the report.
+          </p>
+        </article>
+
+        <!-- Bull / base / bear -->
+        <article class="card">
+          <div class="card-heading">Bull / Base / Bear Valuation</div>
+          <div class="chart-container">
+            <canvas id="chartScenario"></canvas>
+          </div>
+          <table class="mt-2">
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>FY27E EPS (₹)</th>
+                <th>Target P/E (x)</th>
+                <th>Value (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Bull</td><td>195</td><td>28</td><td>5,460</td></tr>
+              <tr><td>Base</td><td>175</td><td>27</td><td>4,725</td></tr>
+              <tr><td>Bear</td><td>155</td><td>22</td><td>3,410</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </section>
+
+    <!-- CATALYST PATHWAY -->
+    <section class="section" id="catalyst">
+      <div class="section-header">
+        <div class="section-title">GS 12-Month Catalyst Pathway</div>
+        <span class="section-pill">Scenario Cards Block</span>
+      </div>
+      <article class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>Time Frame</th>
+              <th>Catalyst</th>
+              <th>Probability</th>
+              <th>Impact</th>
+              <th>Commentary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1–3 months</td>
+              <td>Major domestic infra wins</td>
+              <td>High</td>
+              <td>Positive on order inflow &amp; sentiment</td>
+              <td>Strong government capex pipeline and healthy bid pipeline.</td>
+            </tr>
+            <tr>
+              <td>1–3 months</td>
+              <td>Hyderabad Metro stake sale progress</td>
+              <td>Medium</td>
+              <td>ROE uplift &amp; capital recycling</td>
+              <td>In-principle understanding with state government.</td>
+            </tr>
+            <tr>
+              <td>3–6 months</td>
+              <td>New green-energy / renewables EPC wins</td>
+              <td>Medium</td>
+              <td>Supports long-term growth &amp; ESG story</td>
+              <td>MoUs in green energy and transition themes.</td>
+            </tr>
+            <tr>
+              <td>6–9 months</td>
+              <td>Special dividend or buyback</td>
+              <td>Low–Medium</td>
+              <td>Higher payout &amp; potential re-rating</td>
+              <td>FY25 DPS ₹34 and healthy FCF provide headroom.</td>
+            </tr>
+            <tr>
+              <td>6–12 months</td>
+              <td>Margin surprise vs guidance</td>
+              <td>Medium</td>
+              <td>EPS upgrades, supports premium valuation</td>
+              <td>NWC improvement &amp; execution discipline.</td>
+            </tr>
+            <tr>
+              <td>6–12 months</td>
+              <td>Asset monetisation &amp; group simplification</td>
+              <td>Medium</td>
+              <td>Lower leverage &amp; higher ROE</td>
+              <td>Strategy includes asset monetisation of non-core assets.</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <!-- MARKET DEBATE VS GS VIEW -->
+    <section class="section" id="debate">
+      <div class="section-header">
+        <div class="section-title">Market Debate vs GS View</div>
+        <span class="section-pill">Description Block</span>
+      </div>
+      <div class="grid grid-cols-2-sm">
+        <article class="card">
+          <div class="card-heading">What the Market Thinks</div>
+          <ul class="thesis-list mt-2">
+            <li>L&amp;T already trades at a premium multiple (≈29x trailing P/E, 5.5x P/B).</li>
+            <li>Infra / EPC is cyclical with execution and commodity risk that may cap upside.</li>
+            <li>International exposure, especially hydrocarbons, could bring geopolitical and margin risk.</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="card-heading">GS Variant Perception</div>
+          <ul class="thesis-list mt-2">
+            <li>Current upcycle is more structural, backed by multi-year public capex and energy-transition needs.</li>
+            <li>Order book quality is improving, with higher-value segments, supporting sustainable high-teens ROE.</li>
+            <li>Working capital discipline and asset monetisation should raise FCF and support capital returns.</li>
+            <li>We expect EPS upgrades as Q3–Q4 FY26 confirm order inflow &amp; execution strength.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- RISKS -->
+    <section class="section" id="risks">
+      <div class="section-header">
+        <div class="section-title">Key Risks &amp; Counter-Thesis</div>
+        <span class="section-pill">Risk Cards Block</span>
+      </div>
+      <div class="grid grid-cols-2-sm grid-cols-3-lg">
+        <!-- Macro risk -->
+        <article class="card">
+          <div class="card-heading">Macro / Policy Risk</div>
+          <p class="card-sub mt-2">
+            Slower-than-expected Indian public capex due to fiscal constraints or political changes.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Medium</span>
+            <span class="risk-pill risk-impact">Impact: High</span>
+            <span class="risk-pill risk-detect">Detectability: Moderate</span>
+          </div>
+        </article>
+
+        <!-- Execution risk -->
+        <article class="card">
+          <div class="card-heading">Execution Risk</div>
+          <p class="card-sub mt-2">
+            Cost overruns, delays or penalties on large EPC projects, including international fixed-price contracts.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Medium</span>
+            <span class="risk-pill risk-impact">Impact: High</span>
+            <span class="risk-pill risk-detect">Detectability: Hard</span>
+          </div>
+        </article>
+
+        <!-- Competitive intensity -->
+        <article class="card">
+          <div class="card-heading">Competitive Intensity</div>
+          <p class="card-sub mt-2">
+            Aggressive pricing by domestic &amp; global EPC competitors could compress margins.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Medium</span>
+            <span class="risk-pill risk-impact">Impact: Medium</span>
+            <span class="risk-pill risk-detect">Detectability: Moderate</span>
+          </div>
+        </article>
+
+        <!-- Commodity / FX -->
+        <article class="card">
+          <div class="card-heading">Commodity &amp; FX</div>
+          <p class="card-sub mt-2">
+            Adverse move in steel, cement, energy or FX could affect project profitability despite hedging.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Medium</span>
+            <span class="risk-pill risk-impact">Impact: Medium</span>
+            <span class="risk-pill risk-detect">Detectability: Easy</span>
+          </div>
+        </article>
+
+        <!-- Regulatory / ESG -->
+        <article class="card">
+          <div class="card-heading">Regulatory / ESG</div>
+          <p class="card-sub mt-2">
+            Stricter ESG norms, environmental clearances or export controls on defence / nuclear projects.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Low–Medium</span>
+            <span class="risk-pill risk-impact">Impact: Medium</span>
+            <span class="risk-pill risk-detect">Detectability: Moderate</span>
+          </div>
+        </article>
+
+        <!-- Project delay / client risk -->
+        <article class="card">
+          <div class="card-heading">Project &amp; Client Risk</div>
+          <p class="card-sub mt-2">
+            Delays in client financial closure, land acquisition or approvals, especially in government projects.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Medium</span>
+            <span class="risk-pill risk-impact">Impact: High</span>
+            <span class="risk-pill risk-detect">Detectability: Moderate</span>
+          </div>
+        </article>
+
+        <!-- Balance sheet -->
+        <article class="card">
+          <div class="card-heading">Balance Sheet Risk</div>
+          <p class="card-sub mt-2">
+            Higher-than-expected support to subsidiaries or project SPVs, increasing leverage or lowering payouts.
+          </p>
+          <div class="flex mt-3">
+            <span class="risk-pill risk-prob">Probability: Low–Medium</span>
+            <span class="risk-pill risk-impact">Impact: Medium</span>
+            <span class="risk-pill risk-detect">Detectability: Moderate</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- APPENDIX / MODEL SNAPSHOT -->
+    <section class="section" id="appendix">
+      <div class="section-header">
+        <div class="section-title">Model Snapshot &amp; KPIs</div>
+        <span class="section-pill">Data Table Block</span>
+      </div>
+      <div class="grid grid-cols-2-sm">
+        <!-- P&L -->
+        <article class="card">
+          <div class="card-heading">P&amp;L Summary (₹ bn)</div>
+          <table class="mt-2">
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Revenue</th>
+                <th>EBITDA</th>
+                <th>EBITDA %</th>
+                <th>PAT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>FY24A</td><td>2,211</td><td>234</td><td>10.6%</td><td>130</td></tr>
+              <tr><td>FY25A</td><td>2,557</td><td>281</td><td>11.0%</td><td>150</td></tr>
+              <tr><td>FY26E</td><td>2,839</td><td>312</td><td>11.0%</td><td>169</td></tr>
+              <tr><td>FY27E</td><td>3,180</td><td>356</td><td>11.2%</td><td>191</td></tr>
+              <tr><td>FY28E</td><td>3,562</td><td>403</td><td>11.3%</td><td>217</td></tr>
+            </tbody>
+          </table>
+          <p class="muted-note">
+            FY24–FY25 actuals from company; FY26E–FY28E GS estimates from the report.
+          </p>
+        </article>
+
+        <!-- Key definitions -->
+        <article class="card">
+          <div class="card-heading">KPI Glossary</div>
+          <ul class="thesis-list mt-2">
+            <li><strong>Order inflow:</strong> new orders booked during the period at contract value.</li>
+            <li><strong>Order book:</strong> outstanding unexecuted order value.</li>
+            <li><strong>Book-to-bill:</strong> order book divided by annual revenue.</li>
+            <li><strong>EBITDA margin:</strong> EBITDA / revenue.</li>
+            <li><strong>ROE:</strong> net profit to equity holders / average equity.</li>
+            <li><strong>ROCE:</strong> EBIT / capital employed.</li>
+            <li><strong>FCF:</strong> operating cash flow minus capex.</li>
+            <li><strong>NWC / revenue:</strong> net working capital divided by revenue.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      L&amp;T Dashboard • Built from the Goldman Sachs-style Initiation of Coverage
+      report. All numbers and text are sourced only from that report.
+    </footer>
+  </div>
+
+  <!-- CHART CONFIGURATION -->
+  <script>
+    // P&L multi-line chart
+    const ctxPnl = document.getElementById('chartPnl').getContext('2d');
+    new Chart(ctxPnl, {
+      type: 'line',
+      data: {
+        labels: ['FY24A', 'FY25A', 'FY26E', 'FY27E', 'FY28E'],
+        datasets: [
+          {
+            label: 'Revenue (₹ bn)',
+            data: [2211, 2557, 2839, 3180, 3562],
+            borderWidth: 2,
+            tension: 0.25
+          },
+          {
+            label: 'EBITDA (₹ bn)',
+            data: [234, 281, 312, 356, 403],
+            borderWidth: 2,
+            tension: 0.25
+          },
+          {
+            label: 'PAT (₹ bn)',
+            data: [130, 150, 169, 191, 217],
+            borderWidth: 2,
+            tension: 0.25
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#e5e7eb', font: { size: 10 } } }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#9ca3af', font: { size: 10 } },
+            grid: { color: 'rgba(148,163,184,0.15)' }
+          },
+          y: {
+            ticks: { color: '#9ca3af', font: { size: 10 } },
+            grid: { color: 'rgba(148,163,184,0.15)' }
+          }
+        }
+      }
+    });
+
+    // Order inflow vs Revenue chart
+    const ctxOrders = document.getElementById('chartOrders').getContext('2d');
+    new Chart(ctxOrders, {
+      data: {
+        labels: ['FY24A', 'FY25A', 'FY26E'],
+        datasets: [
+          {
+            type: 'bar',
+            label: 'Order inflow (₹ bn)',
+            data: [3028, 3566, 3923], // FY26E inflow is extrapolated from report’s 10% assumption
+            borderWidth: 1
+          },
+          {
+            type: 'line',
+            label: 'Revenue (₹ bn)',
+            data: [2211, 2557, 2839],
+            borderWidth: 2,
+            tension: 0.25
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#e5e7eb', font: { size: 10 } } }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#9ca3af', font: { size: 10 } },
+            grid: { color: 'rgba(148,163,184,0.15)' }
+          },
+          y: {
+            ticks: { color: '#9ca3af', font: { size: 10 } },
+            grid: { color: 'rgba(148,163,184,0.15)' }
+          }
+        }
+      }
+    });
+
+    // Bull / Base / Bear bar chart
+    const ctxScenario = document.getElementById('chartScenario').getContext('2d');
+    new Chart(ctxScenario, {
+      type: 'bar',
+      data: {
+        labels: ['Bull', 'Base', 'Bear'],
+        datasets: [
+          {
+            label: 'Value per share (₹)',
+            data: [5460, 4725, 3410],
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#9ca3af', font: { size: 10 } },
+            grid: { display: false }
+          },
+          y: {
+            ticks: { color: '#9ca3af', font: { size: 10 } },
+            grid: { color: 'rgba(148,163,184,0.15)' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
